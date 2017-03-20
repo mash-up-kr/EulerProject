@@ -1,4 +1,6 @@
-import java.math.BigInteger;
+import java.util.PrimitiveIterator;
+import java.util.function.Predicate;
+import java.util.stream.LongStream;
 
 /*
  * Even Fibonacci numbers
@@ -7,24 +9,54 @@ import java.math.BigInteger;
  * 짝수이면서 4백만 이하인 모든 항을 더하면 얼마가 됩니까?
  */
 public class Problem2 {
+
 	public static void main(String[] args) {
+		new Problem2();
+	}
 
-		int sum = 2;
-
-		BigInteger n1 = new BigInteger("1");
-		BigInteger n2 = new BigInteger("2");
-		BigInteger even = new BigInteger("2");
-		BigInteger n3;
-
-		while (n2.intValue() < 4000000) {
-			n3 = n1.add(n2);
-			if (n3.mod(even).intValue() == 0) {
-				sum += n3.intValue();
-			}
-			n1 = n2;
-			n2 = n3;
-		}
+	public Problem2() {
+		FibonacciStreamBuilder builder = new FibonacciStreamBuilder();
+		long sum = builder.getStream(x -> x < 4000000)
+						.filter(x -> x % 2 == 0)
+						.sum();
 
 		System.out.println(sum); // 4613732
+	}
+
+	class FibonacciStreamBuilder {
+		public LongStream getStream(Predicate<Long> predicate) {
+			LongStream.Builder builder = LongStream.builder();
+			FibonacciIterator iterator = new FibonacciIterator(predicate);
+			while (iterator.hasNext()) {
+				builder.add(iterator.nextLong());
+			}
+			return builder.build();
+		}
+	}
+
+	class FibonacciIterator implements PrimitiveIterator.OfLong {
+
+		private Predicate<Long> predicate;
+		private long x;
+		private long y;
+
+		public FibonacciIterator(Predicate<Long> predicate) {
+			this.predicate = predicate;
+			x = -1;
+			y = 1;
+		}
+
+		@Override
+		public long nextLong() {
+			long result = x + y;
+			x = y;
+			y = result;
+			return result;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return predicate.test(x + y);
+		}
 	}
 }
