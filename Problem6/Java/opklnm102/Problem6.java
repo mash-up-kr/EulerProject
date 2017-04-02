@@ -12,23 +12,71 @@ public class Problem6 {
 
     public static void main(String[] args) {
 
-        int sumOfSquare = generatorSumOfSquare(100);
-        int squareOfSum = generatorSquareOfSum(100);
+       int result = new SolutionWithSigma(100).result();
 
-        System.out.println(squareOfSum - sumOfSquare);  // 25164150
+        System.out.println(result);  // 25164150
+    }
+}
+
+/**
+ * 스트림을 이용한 풀이
+ */
+class SolutionWithStream {
+
+    int mNum;
+
+    public SolutionWithStream(int num){
+        mNum = num;
     }
 
-    // 합의 제곱
-    public static int generatorSquareOfSum(int max) {
+    public int result(){
+        int squareOfSum = generatorSquareOfSumWithStream(mNum);
+        int sumOfSquare = generatorSumOfSquareWithStream(mNum);
+
+        return squareOfSum - sumOfSquare;
+    }
+
+    // 합의 제곱을 스트림으로 계산
+    private int generatorSquareOfSumWithStream(int max) {
         int sum = IntStream.rangeClosed(1, max)
                 .sum();
         return (int) Math.pow(sum, 2);
     }
 
-    // 제곱의 합
-    public static int generatorSumOfSquare(int max) {
+    // 제곱의 합을 스트림으로 계산
+    private int generatorSumOfSquareWithStream(int max) {
         return IntStream.rangeClosed(1, max)
                 .map(x -> (int) Math.pow(x, 2))
                 .sum();
+    }
+}
+
+/**
+ * 시그마를 이용한 풀이
+ */
+class SolutionWithSigma {
+
+    int mNum;
+
+    public SolutionWithSigma(int num){
+        mNum = num;
+    }
+
+    public int result(){
+        int squareOfSum = generatorSquareOfSumWithSigma(mNum);
+        int sumOfSquare = generatorSumOfSquareWithSigma(mNum);
+
+        return squareOfSum - sumOfSquare;
+    }
+
+
+    // 합의 제곱을 시그마로 계산
+    private int generatorSquareOfSumWithSigma(int max) {
+        return (int) Math.pow(max * (max + 1) / 2, 2);
+    }
+
+    // 제곱의 합을 시그마로 계산
+    private int generatorSumOfSquareWithSigma(int max) {
+        return max * (max + 1) * (2 * max + 1) / 6;
     }
 }
