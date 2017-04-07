@@ -3,7 +3,7 @@
  */
 fun main(args: Array<String>){
 
-    order(10000000).answer()
+    order(100).answer()
 }
 
 fun order(max : Int) : Int = (1..max).sum().square - (1..max).sumBy(Int::square)
