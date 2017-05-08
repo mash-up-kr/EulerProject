@@ -24,16 +24,16 @@ class GeneratorPrime {
     public long generate() {
         return LongStream.iterate(3, x -> x + 2)  // 소수는 홀수이므로 홀수만 검사
                 .filter(this::isPrime)
-                .limit(mLimit - 2)  // 5부터 시작이라고 생각 -> 2, 3에 해당하는 수 빼줌
+                .limit(mLimit - 1)  // 3부터 시작 2를 제외
                 .max().getAsLong();
     }
 
-    /*
-      5일 때 false가 나와서 조건 추가
-     */
     private boolean isPrime(long num) {
-        return num == 5 || LongStream.iterate(3, x -> x + 2)
-                .limit(new Double(Math.sqrt(num)).longValue())
-                .noneMatch(x -> num % x == 0);
+        for (int i = 3; i < num; i += 2) {
+            if (num % i == 0) {
+                return false;
+            }
+        }
+        return true;
     }
 }
